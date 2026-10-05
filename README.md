@@ -28,7 +28,34 @@ The pinned vLLM 0.29.0 image currently publishes an ARM64 manifest. Confirm it o
 docker manifest inspect vllm/vllm-openai:v0.29.0
 ```
 
+## Install eugr
+
+eugr is installed as a Git checkout rather than as a system package. First verify that the Spark sees its GPU and that Docker is available:
+
+```bash
+nvidia-smi
+docker info
+```
+
+Install the eugr revision used for this package's integration tests:
+
+```bash
+git clone https://github.com/eugr/spark-vllm-docker.git \
+  "$HOME/spark-vllm-docker"
+
+git -C "$HOME/spark-vllm-docker" checkout \
+  bb6ee761643f45eb84b14f7e39c41d7538d53890
+```
+
+If eugr is already installed, do not clone it again. Check its current revision with `git -C "$HOME/spark-vllm-docker" rev-parse HEAD`; the Kolibri installer verifies the recipe features it needs and warns when the checkout differs from the tested commit.
+
+Docker must be configured with NVIDIA Container Toolkit support before launching a recipe. Follow the [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) if GPU containers are not yet working. See the [eugr repository](https://github.com/eugr/spark-vllm-docker) for its complete documentation and update notes.
+
+The pinned checkout is intentionally detached from eugr's moving `main` branch. Review upstream changes and rerun `bash tools/check-package.sh` before adopting a newer eugr revision.
+
 ## Install And Launch
+
+After installing eugr, clone this package and install its recipes into that checkout:
 
 ```bash
 git clone https://github.com/GroveMinting/kolibri-1-solo-dgx-spark-eugr.git
