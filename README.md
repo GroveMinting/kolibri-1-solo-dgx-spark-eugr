@@ -95,7 +95,7 @@ KOLIBRI_API_KEY="$KOLIBRI_API_KEY" ./tools/kolibri-smoke.sh http://127.0.0.1:800
 ## Verification On Spark
 
 1. `docker image inspect vllm-node-kolibri1-029 --format '{{.Architecture}}'` must report `arm64`.
-2. `docker run --rm --entrypoint python vllm-node-kolibri1-029 -c 'import vllm, aleph_alpha_inference; aleph_alpha_inference.register(); print(vllm.__version__)'` must report `0.29.0` without registration errors.
+2. `docker run --rm --entrypoint python3 vllm-node-kolibri1-029 -c 'import vllm, aleph_alpha_inference; aleph_alpha_inference.register(); print(vllm.__version__)'` must report `0.29.0` without registration errors.
 3. Start the standard profile and inspect logs with `docker logs -f vllm_node` (the name can vary). Confirm an FP8 model load, FP8 KV allocation, and no sm_121 kernel fallback or error.
 4. Run `./tools/kolibri-smoke.sh http://127.0.0.1:8000`. It checks readiness, model listing, text generation, and a structured tool call with valid arguments.
 5. Measure startup time, peak unified memory, prefill/decode latency, and output quality at 262K before trying `./run-kolibri.sh --1m`.
